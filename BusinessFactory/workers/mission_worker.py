@@ -4,9 +4,14 @@ from __future__ import annotations
 
 from typing import Any, Dict
 
-from BusinessFactory.mission_queue import MissionQueue, RouterAdapter, RouterPayload
+from BusinessFactory.mission_queue import MissionQueue, RouterAdapter
+from BusinessFactory.mission_engine import execute_action
 
 
 def execute(payload: Dict[str, Any]) -> Dict[str, Any]:
-    queue = MissionQueue(router_adapter=RouterAdapter())
-    return queue.submit(payload)  # payload should conform to RouterPayload
+    # Route LLM actions via queue/router; other actions via mission_engine
+    action_type = payload.get("action_type", "llm")
+    if action_type == "llm":
+        queue = MissionQueue(router_adapter=RouterAdapter())
+        return queue.submit(payload)
+    return execute_action(payload, router=RouterAdapter())
