@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard
+  labels:
+    grafana_dashboard: "1"
+    app: raeburn-brain
+    component: monitoring
+  annotations:
+    grafana_folder: "Raeburn"
+data:
+  raeburn-dashboard.json: |
+    {
+      "schemaVersion": 36,
+      "title": "Raeburn Brain",
+      "panels": [
+        {
+          "type": "graph",
+          "title": "Request Rate",
+          "targets": [
+            {"expr": "app_requests_total", "legendFormat": "requests"}
+          ]
+        },
+        {
+          "type": "graph",
+          "title": "Uptime",
+          "targets": [
+            {"expr": "app_uptime_seconds", "legendFormat": "uptime"}
+          ]
+        }
+      ],
+      "annotations": {
+        "list": [
+          {"builtIn": 1, "name": "Annotations & Alerts", "type": "dashboard"}
+        ]
+      }
+    }
