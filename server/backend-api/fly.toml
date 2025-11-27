@@ -1,0 +1,32 @@
+# fly.toml for server/backend-api
+app = "raeburn-scraper-api" # TODO: Replace with your desired unique app name
+primary_region = "lhr"      # TODO: Choose a region close to your users/data sources
+
+[build]
+  # Instruct Fly to build the Docker image using the Dockerfile in this directory
+  dockerfile = "Dockerfile"
+
+[env]
+  # Set environment variables here if they are NOT secrets.
+  # Secrets should be set using `flyctl secrets set` for security.
+  # Example non-secret (if any):
+  # NODE_ENV = "production"
+  PORT = "3001" # This should match the internal_port below and your server's listen port
+
+[http_service]
+  internal_port = 3001        # Port the application listens on inside the container
+  force_https = true
+  auto_stop_machines = true   # Can stop machines when idle to save $
+  auto_start_machines = true  # Start machines when requests come in
+  min_machines_running = 0    # 0 for free tier, consider 1 for always-on (paid)
+  processes = ["app"]
+
+  [http_service.concurrency]
+    type = "connections"
+    hard_limit = 25
+    soft_limit = 20
+
+# [[vm]] # Optional: Specify VM size if needed beyond default
+#   memory = '1gb'
+#   cpu_kind = 'shared'
+#   cpus = 1

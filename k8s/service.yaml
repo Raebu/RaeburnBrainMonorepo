@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+name: scrapebot-api
+spec:
+selector:
+app: scrapebot-api
+ports:
+- protocol: TCP
+port: 80
+targetPort: 3001
+type: LoadBalancer
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+name: scrapebot-ingress
+annotations:
+kubernetes.io/ingress.class: "traefik"
+traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+tls:
+- hosts:
+- api.scrapebot.io
+secretName: scrapebot-tls
+rules:
+- host: api.scrapebot.io
+http:
+paths:
+- path: /
+pathType: Prefix
+backend:
+service:
+name: scrapebot-api
+port:
+number: 80

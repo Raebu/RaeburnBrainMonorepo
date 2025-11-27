@@ -1,0 +1,56 @@
+generator client {
+provider = "prisma-client-js"
+}
+
+datasource db {
+provider = "postgresql"
+url = env("DATABASE_URL")
+}
+
+model User {
+id String @id @default(uuid())
+email String @unique
+password String?
+name String
+googleId String? @unique
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
+quota Quota?
+sessions Session[]
+scrapeJobs ScrapeJob[]
+}
+
+model Quota {
+id String @id @default(uuid())
+userId String @unique
+dailyLimit Int @default(10)
+usedToday Int @default(0)
+resetAt DateTime @default(now())
+user User @relation(fields: [userId], references: [id])
+}
+
+model Session {
+id String @id @default(uuid())
+userId String
+name String
+cookies String // Encrypted cookies
+userAgent String
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
+user User @relation(fields: [userId], references: [id])
+}
+
+model ScrapeJob {
+id String @id
+url String
+status String @default("queued")
+config String // JSON config
+resultUrl String? // S3 URL for results
+error String?
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
+startedAt DateTime?
+completedAt DateTime?
+userId String
+user User @relation(fields: [userId], references: [id])
+}

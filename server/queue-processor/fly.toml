@@ -1,0 +1,37 @@
+# fly.toml for server/queue-processor
+app = "raeburn-scraper-worker" # TODO: Replace with your desired unique app name
+primary_region = "lhr"         # TODO: Choose a region, ideally matching the API if they communicate closely
+
+[build]
+  # Instruct Fly to build the Docker image using the Dockerfile in this directory
+  dockerfile = "Dockerfile"
+
+[env]
+  # Set environment variables here if they are NOT secrets.
+  # Secrets should be set using `flyctl secrets set`.
+  # Example non-secret (if any):
+  # NODE_ENV = "production"
+  # Indicate this is the worker process if needed by your app logic
+  # PROCESS_TYPE = "worker"
+
+[processes]
+  # Define the machine process for the worker
+  worker = "node worker.js" # Command to start your worker script
+
+[checks]
+  # Optional: Define health checks if your worker exposes an endpoint
+  # For a background worker, this might not be applicable.
+  # [checks.alive]
+  #   port = 3002 # If your worker had a health check endpoint
+  #   type = "http"
+  #   interval = "15s"
+  #   timeout = "10s"
+  #   grace_period = "5s"
+  #   method = "get"
+  #   path = "/health"
+  #   protocol = "http"
+
+# [[vm]] # Optional: Specify VM size if needed beyond default
+#   memory = '1gb'
+#   cpu_kind = 'shared'
+#   cpus = 1

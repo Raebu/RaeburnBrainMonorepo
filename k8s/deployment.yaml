@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+region: eu-west
+spec:
+affinity:
+nodeAffinity:
+requiredDuringSchedulingIgnoredDuringExecution:
+nodeSelectorTerms:
+- matchExpressions:
+- key: topology.kubernetes.io/region
+operator: In
+values:
+- eu-west-1
+containers:
+- name: worker
+image: scrapebot/worker:latest
+env:
+- name: REGION
+value: "eu-west-1"
+- name: REDIS_URL
+value: "redis://redis-cluster.svc.cluster.local:6379"
+resources:
+requests:
+memory: "512Mi"
+cpu: "500m"
+limits:
+memory: "1Gi"
+cpu: "1000m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+name: scrapebot-worker-apac
+spec:
+replicas: 1
+selector:
+matchLabels:
+app: scrapebot-worker
+region: ap-southeast
+template:
+metadata:
+labels:
+app: scrapebot-worker
+region: ap-southeast
+spec:
+affinity:
+nodeAffinity:
+requiredDuringSchedulingIgnoredDuringExecution:
+nodeSelectorTerms:
+- matchExpressions:
+- key: topology.kubernetes.io/region
+operator: In
+values:
+- ap-southeast-1
+containers:
+- name: worker
+image: scrapebot/worker:latest
+env:
+- name: REGION
+value: "ap-southeast-1"
+- name: REDIS_URL
+value: "redis://redis-cluster.svc.cluster.local:6379"
+resources:
+requests:
+memory: "512Mi"
+cpu: "500m"
+limits:
+memory: "1Gi"
+cpu: "1000m"
