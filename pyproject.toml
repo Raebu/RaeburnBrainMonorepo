@@ -1,8 +1,38 @@
 [project]
 name = "raeburn-monorepo"
-version = "0.0.0"
-description = "Placeholder root project for monorepo scaffold."
+version = "0.1.0"
+description = "Raeburn monorepo"
+readme = "README.md"
+authors = [{name = "Raeburn"}]
+requires-python = ">=3.10"
+dependencies = [
+    "httpx",
+    "pydantic",
+    "tenacity",
+    "prometheus_client",
+    "jinja2",
+    "python-dotenv",
+    "sqlalchemy",
+    "orjson",
+    "uvloop",
+    "psutil",
+    "rich",
+    "typer",
+    "fastapi",
+    "redis",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+]
 
 [build-system]
-requires = []
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.poetry.packages]
+RaeburnBrainAI = { from = "RaeburnBrainAI" }
+BusinessFactory = { from = "BusinessFactory" }
+RaeburnMemory = { from = "RaeburnMemory" }
