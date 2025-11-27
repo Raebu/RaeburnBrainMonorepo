@@ -1,0 +1,25 @@
+{
+  "models": [
+    {
+      "name": "local-general",
+      "type": "local",
+      "path": "models/general.gguf",
+      "cost": 0.0,
+      "tags": ["general"],
+      "latency_ms": 0,
+      "avg_score": 0.0,
+      "failure_rate": 0.0
+    },
+    {
+      "name": "litelm-mistral",
+      "type": "litelm",
+      "model": "mistral-7b-instruct",
+      "endpoint": "http://localhost:4000/v1/chat/completions",
+      "cost": 0.0,
+      "tags": ["analysis", "code"],
+      "latency_ms": 0,
+      "avg_score": 0.0,
+      "failure_rate": 0.0
+    }
+  ]
+}

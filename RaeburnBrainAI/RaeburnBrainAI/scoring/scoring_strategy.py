@@ -1,0 +1,1 @@
+"""Scoring strategy stub."""

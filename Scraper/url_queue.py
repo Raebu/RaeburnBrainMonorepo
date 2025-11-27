@@ -1,0 +1,1 @@
+"""URL queue stub."""

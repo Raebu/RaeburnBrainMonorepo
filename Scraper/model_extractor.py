@@ -1,0 +1,1 @@
+"""Model extractor stub."""

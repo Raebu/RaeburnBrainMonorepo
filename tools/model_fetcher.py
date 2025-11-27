@@ -1,0 +1,1 @@
+"""Model fetcher tool stub."""

@@ -1,0 +1,13 @@
+{
+  "local-general": {
+    "path": "models/general.gguf",
+    "installed": true,
+    "hash": "",
+    "size": 0
+  },
+  "litelm-mistral": {
+    "installed": true,
+    "last_checked": 0,
+    "endpoint": "http://localhost:4000/v1/chat/completions"
+  }
+}

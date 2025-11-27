@@ -1,0 +1,1 @@
+"""Mission engine stub."""

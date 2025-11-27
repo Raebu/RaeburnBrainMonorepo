@@ -1,0 +1,8 @@
+[project]
+name = "raeburn-monorepo"
+version = "0.0.0"
+description = "Placeholder root project for monorepo scaffold."
+
+[build-system]
+requires = []
+build-backend = "setuptools.build_meta"

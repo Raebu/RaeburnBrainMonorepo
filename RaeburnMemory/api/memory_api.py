@@ -1,0 +1,1 @@
+"""Memory API implementation stub."""

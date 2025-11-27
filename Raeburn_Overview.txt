@@ -1,0 +1,150 @@
+**Raeburn Brain AI: Full System Architecture**
+
+---
+
+### 🫠 Overview
+
+Raeburn Brain AI is a modular, multi-agent, hybrid AI infrastructure for orchestrating local and remote LLMs, memory-augmented routing, agent evolution, autonomous decision-making, and fully autonomous AI business deployment. It supports plugin discovery, agent lifecycle tracking, performance scoring, contextual memory injection, and scalable team communication.
+
+---
+
+### ✅ Completion Tracker (Tick When Done)
+
+* [ ] Memory store: TinyDB/SQLite/Postgres, sharding, FTS
+* [ ] Context injector: top 3 memory recall and formatting
+* [ ] Hybrid router: UCB1, Thompson, Softmax with retry/fallback
+* [ ] Scoring engine: latency, cost, failure-aware hybrid score
+* [ ] Decision engine: context tag + agent trait–based template selection
+* [ ] Pydantic config loader (`settings.py`)
+* [ ] Model fetcher: plugin-based, signature/hash/size/decompress verified
+* [ ] Model health checker: multi-probe (math, echo, logic)
+* [ ] Local + remote model support (Ollama + OpenRouter/HuggingFace)
+* [ ] Judge model comparison: 3-model scoring + winner feedback
+* [ ] Agent persona generation: traits, name, timestamp
+* [ ] Agent promotion/demotion/sandboxing lifecycle
+* [ ] Agent mentorship + auto-generated title evolution
+* [ ] Agent-to-agent chat threading + mood states
+* [ ] Prompt templates: dynamic, tag-mapped, persona-aware
+* [ ] Business Factory: daily AI-run business spawn + KPI loop
+* [ ] Voice I/O: Whisper + TTS pipeline
+* [ ] Telegram + optional Slack/Discord broadcast support
+* [ ] Structured JSON logs + rotating file handler
+* [ ] Prometheus metrics for routing, memory, model probes
+* [ ] `/metrics`, `/healthz`, `/uptime` API endpoints
+* [ ] Docker + Docker Compose + systemd service file
+* [ ] Signature-enforced model verification
+* [ ] Preflight system check (`tools/preflight.py`)
+* [ ] Online-only deployment mode support
+* [ ] Hybrid mode support (local + remote routing)
+* [ ] Plugin system: `meta.json`, `raeburn_*.py`, hot-reloadable
+* [ ] Postmortem analyzer + failure log system
+* [ ] Grafana/log feedback injection into memory store
+* [ ] Business KPI dashboard/tracker (internal scoring loop)
+* [ ] CI tests: memory, fetcher, router, health checker
+* [ ] Streaming + Postgres concurrency integration tests
+
+---
+
+### 🔍 Key Subsystems
+
+1. **Core Engine**
+
+   * Memory store with agent sharding and semantic tagging
+   * Context injection system
+   * Hybrid routing engine with scoring and retry/fallback
+   * Bandit algorithms (UCB1, Thompson, Softmax)
+   * Pydantic-based config management
+
+2. **Model Infrastructure**
+
+   * Pluggable model fetcher (HuggingFace, mirrors)
+   * Health checker with synthetic probes
+   * Router-wide scoring based on cost, latency, accuracy
+   * Local + remote (OpenRouter, Ollama) support
+   * Signature verification for model security
+
+3. **Agent Identity & Lifecycle**
+
+   * Trait-based persona generator
+   * Title assignment and promotion based on scored performance
+   * Sandboxing and demotion for underperformers
+   * Agent mentorship, combination, and cloning
+   * Stored in `agent_registry.json`
+
+4. **Prompt Management**
+
+   * Dynamic template selection from `agent_templates/`
+   * Context injection via Jinja2 engine
+   * Chat memory history threading with `chat_templates.json`
+   * Mood, tone, and personality modifiers
+
+5. **Memory & Knowledge Layer**
+
+   * TinyDB/SQLite/Postgres adapters with FTS5 or tsvector
+   * Auto-pruning of expired/low-importance entries
+   * Semantic key/tag indexing and search
+   * Log-derived memory entry creation (via RAG/fusion planned)
+
+6. **Autonomous Meta-Agent Logic**
+
+   * Daily mission generator: assign KPIs, team roles, goals
+   * Score-based decision on agent retention, promotion, or rerouting
+   * Logs and metrics influence agent evolution
+   * Optional mentor–apprentice logic for weak agents
+
+7. **Judging + Voting System**
+
+   * 3-model response competition per prompt
+   * Judge LLM (local or remote) selects the best output
+   * Winning model is reinforced (score, CPU priority, title)
+   * Underperformers tracked and optionally sandboxed
+
+8. **Business Factory Mode**
+
+   * Auto-creates new AI-led businesses daily
+   * Assigns internal teams to marketing, dev, voice outreach
+   * Business types chosen from success patterns or niche detection
+   * Loop uses past financial performance to evolve agent specializations
+
+9. **Operational Dashboard & Logs**
+
+   * `/metrics`, `/uptime`, `/healthz` endpoints
+   * JSON structured logs
+   * Prometheus metrics
+   * Real-time log injection into LLM context (feedback loop)
+
+10. **Security & Deployment**
+
+    * Systemd service, Docker Compose, Makefile
+    * Secure config validation with Pydantic
+    * Signature-enforced model fetching
+    * Authenticated dashboards with TLS/token planned
+
+11. **Plugin System**
+
+    * Modular folders for new tools or agents
+    * Autodiscovery via naming convention (`raeburn_*.py`)
+    * `meta.json` provides sandbox, priority, description
+    * Dynamic loading on startup or live hot-reload
+
+12. **Communications Layer**
+
+    * Telegram bot support for agent messaging
+    * Voice synthesis and recognition pipeline (via Whisper + TTS)
+    * Local UI terminal + Electron wrappers
+    * Optional broadcast mode to Slack/Discord for agent updates
+
+13. **Extensibility Hooks**
+
+    * Judge model configurable (e.g., GPT-4, Claude, Qwen)
+    * Additional model health sources (Censys, inference metrics)
+    * GPU/CPU routing logic aware of model priority + resource cost
+    * GPT-based prompt rewriters and augmenters
+
+---
+
+### 📊 Summary
+
+Raeburn Brain AI is an advanced autonomous AI command system. It unifies hybrid model inference, agent memory, prompt selection, scoring, feedback loops, and performance evolution. It is modular, extensible, production-hardened, and built to spawn and manage AI-driven businesses, services, and communication agents at scale.
+
+Remaining work includes full integration of structured logging, judge LLM routing, business factory stabilization, full sandboxing enforcement, agent lifecycle tracking, and long-term memory analytics.

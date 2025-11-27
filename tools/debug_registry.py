@@ -1,0 +1,1 @@
+"""Debug registry tool stub."""

@@ -1,0 +1,1 @@
+"""Daily mission package stub."""

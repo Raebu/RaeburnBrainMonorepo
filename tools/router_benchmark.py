@@ -1,0 +1,1 @@
+"""Router benchmark stub."""
