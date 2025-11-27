@@ -1,0 +1,64 @@
+name: CI
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+      - name: Cache wheels
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('requirements.txt', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ matrix.python-version }}-
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install -e .[fastapi,pgvector,qdrant,embedding,test,dev]
+      - name: Lint
+        run: |
+          black --check .
+          ruff check .
+      - name: Type check
+        run: mypy raeburnmemory
+      - name: Build package
+        run: python -m build
+      - name: Run tests
+        env:
+          PYTHONWARNINGS: error
+        run: pytest -n auto --cov=raeburnmemory --cov=tests --cov-report=xml -W error
+      - uses: actions/upload-artifact@v3
+        with:
+          name: coverage-${{ matrix.python-version }}
+          path: coverage.xml
+
+  release:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - id: version
+        run: echo "version=$(python -c 'import setuptools_scm;print(setuptools_scm.get_version())')" >> "$GITHUB_OUTPUT"
+      - name: Tag release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git tag -f v${{ steps.version.outputs.version }}
+          git push origin v${{ steps.version.outputs.version }} --force

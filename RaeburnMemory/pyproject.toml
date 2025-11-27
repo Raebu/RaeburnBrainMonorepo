@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools>=68", "setuptools_scm>=8", "wheel", "build", "twine"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "raeburnmemory"
+dynamic = ["version"]
+description = "Persistent memory graph for LLM interactions"
+readme = "README.md"
+authors = [{name = "Raeburn"}]
+maintainers = [{name = "Raeburn"}]
+keywords = ["memory", "graph", "llm"]
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+license = {file = "LICENSE"}
+requires-python = ">=3.10"
+dependencies = [
+    "networkx==3.5",
+    "faiss-cpu==1.11.0.post1",
+    "filelock==3.13.1",
+    "typer==0.16.0",
+]
+
+[project.optional-dependencies]
+fastapi = [
+    "fastapi==0.111.0",
+    "starlette==0.37.2",
+    "uvicorn==0.35.0",
+    "httpx==0.28.1",
+]
+pgvector = [
+    "pgvector==0.2.3",
+]
+qdrant = [
+    "qdrant-client==1.15.0",
+]
+embedding = [
+    "sentence-transformers==5.0.0",
+]
+test = [
+    "pytest-xdist==3.5.0",
+    "pytest-cov==4.1.0",
+]
+dev = [
+    "black==24.4.2",
+    "ruff==0.4.4",
+    "mypy==1.8.0",
+]
+docs = [
+    "mkdocs>=1.5",
+    "mkdocs-material>=9.5",
+    "mkdocstrings[python]>=0.24",
+]
+
+[project.urls]
+Homepage = "https://github.com/your-username/RaeburnMemory"
+Changelog = "https://github.com/your-username/RaeburnMemory/blob/main/CHANGELOG.md"
+
+[tool.setuptools]
+package-dir = {"raeburnmemory" = "raeburnmemory"}
+packages = ["raeburnmemory"]
+
+[project.scripts]
+raeburnmemory = "raeburnmemory.cli:app"
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.black]
+target-version = ["py39"]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 88
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+show_error_codes = true
+ignore_errors = true

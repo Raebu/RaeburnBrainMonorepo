@@ -1,0 +1,15 @@
+site_name: RaeburnMemory
+repo_url: https://github.com/your-username/RaeburnMemory
+docs_dir: docs
+nav:
+  - Home: index.md
+  - API: api.md
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: false
+theme:
+  name: material
