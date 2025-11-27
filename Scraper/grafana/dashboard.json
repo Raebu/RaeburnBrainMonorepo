@@ -1,0 +1,56 @@
+{
+"dashboard": {
+"id": null,
+"title": "ScrapeBot Analytics",
+"tags": ["scraping", "workers", "performance"],
+"timezone": "browser",
+"panels": [
+{
+"id": 1,
+"type": "graph",
+"title": "Job Processing Time",
+"datasource": "PostgreSQL",
+"targets": [
+{
+"rawSql": "SELECT date_trunc('hour', created_at) AS time, avg(extract(epoch from (completed_at - started_at))) as duration FROM scrape_jobs WHERE status = 'completed' GROUP BY 1 ORDER BY 1",
+"format": "time_series"
+}
+]
+},
+{
+"id": 2,
+"type": "stat",
+"title": "Active Workers",
+"datasource": "Prometheus",
+"targets": [
+{
+"expr": "sum(up{job=\"scrapebot-worker\"})",
+"instant": true
+}
+]
+},
+{
+"id": 3,
+"type": "piechart",
+"title": "Jobs by Status",
+"datasource": "PostgreSQL",
+"targets": [
+{
+"rawSql": "SELECT status, count(*) FROM scrape_jobs GROUP BY status"
+}
+]
+},
+{
+"id": 4,
+"type": "table",
+"title": "Top Users by Usage",
+"datasource": "PostgreSQL",
+"targets": [
+{
+"rawSql": "SELECT u.email, q.used_today as daily_usage, q.daily_limit FROM users u JOIN quotas q ON u.id = q.user_id ORDER BY q.used_today DESC LIMIT 10"
+}
+]
+}
+]
+}
+}

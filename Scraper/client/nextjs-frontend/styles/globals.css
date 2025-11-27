@@ -1,0 +1,203 @@
+// client/nextjs-frontend/pages/signup.js
+import { useState } from 'react';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { useAuth } from '../lib/auth'; // Adjust path if needed
+
+export default function Signup() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [consentAccepted, setConsentAccepted] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const { signup } = useAuth();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    // Validation
+    if (!name.trim()) {
+      setError('Full Name is required');
+      return;
+    }
+
+    if (!email.trim()) {
+      setError('Email address is required');
+      return;
+    }
+
+    if (!password) {
+      setError('Password is required');
+      return;
+    }
+
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    if (!consentAccepted) {
+      setError('You must accept the legal responsibilities');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const result = await signup(name, email, password);
+
+      if (result.success) {
+        router.push('/onboarding'); // Redirect to onboarding after successful signup
+      } else {
+        setError(result.error || 'Signup failed. Please try again.');
+      }
+    } catch (err) {
+      console.error('Signup error:', err);
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="auth-container">
+      <div className="auth-card card p-8">
+        <div className="text-center mb-6">
+          <div className="flex justify-center mb-4">
+            <div className="logo" aria-label="Raeburn-Scraper Logo"></div>
+          </div>
+          <h1 className="auth-title">Create your Raeburn-Scraper account</h1>
+          <p className="text-muted">
+            Already have an account?{' '}
+            <Link href="/login" className="text-primary hover:underline">
+              Sign in
+            </Link>
+          </p>
+        </div>
+
+        {error && (
+          <div className="error-message flex items-center mb-4">
+            <svg className="flex-shrink-0 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
+            </svg>
+            <span>{error}</span>
+          </div>
+        )}
+
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="name">Full Name</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="e.g., Alex Johnson"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="email">Email address</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="new-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+            />
+            <small className="text-muted">Must be at least 8 characters</small>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="confirmPassword">Confirm Password</label>
+            <input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              autoComplete="new-password"
+              required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="••••••••"
+            />
+          </div>
+
+          <div className="legal-consent p-4 my-6">
+            <h3 className="font-medium">Your Legal Responsibilities</h3>
+            <p className="text-sm my-2">
+              By creating an account, you confirm that you will use Raeburn-Scraper in compliance with:
+            </p>
+            <ul className="list-disc pl-5 text-sm space-y-1 my-2">
+              <li>Website Terms of Service and robots.txt guidelines</li>
+              <li>Data privacy regulations (GDPR, CCPA)</li>
+              <li>Fair use and ethical scraping principles</li>
+            </ul>
+            <div className="consent-checkbox flex items-start mt-4">
+              <input
+                id="consent"
+                name="consent"
+                type="checkbox"
+                checked={consentAccepted}
+                onChange={(e) => setConsentAccepted(e.target.checked)}
+                className="mt-1"
+                required
+              />
+              <label htmlFor="consent" className="ml-2 text-sm">
+                I understand and accept these responsibilities.
+              </label>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className={`btn btn-primary w-full ${loading ? 'opacity-75 cursor-not-allowed' : ''}`}
+          >
+            {loading ? (
+              <>
+                <span className="loading-spinner mr-2"></span>
+                Creating Account...
+              </>
+            ) : (
+              'Sign Up'
+            )}
+          </button>
+        </form>
+
+        <div className="auth-footer">
+          <p className="text-muted text-sm">
+            By signing up, you agree to our <Link href="/terms" className="text-primary hover:underline">Terms of Service</Link> and <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link>.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

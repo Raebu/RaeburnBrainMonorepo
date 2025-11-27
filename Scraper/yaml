@@ -1,0 +1,53 @@
+version: '3.8'
+- "--entrypoints.websecure.address=:443"
+ports:
+- "80:80"
+- "443:443"
+- "8080:8080"
+volumes:
+- /var/run/docker.sock:/var/run/docker.sock:ro
+- ./traefik/certs:/certs
+
+api:
+build: ./server/backend-api
+environment:
+DATABASE_URL: postgresql://scrapebot:scrapebot123@postgres:5432/scrapebot
+REDIS_URL: redis://redis:6379
+JWT_SECRET: your-super-secret-jwt-key
+OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY}
+STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+labels:
+- "traefik.enable=true"
+- "traefik.http.routers.api.rule=Host(`api.scrapebot.local`)"
+- "traefik.http.routers.api.entrypoints=websecure"
+- "traefik.http.routers.api.tls=true"
+depends_on:
+- postgres
+- redis
+
+worker:
+build: ./server/queue-processor
+environment:
+DATABASE_URL: postgresql://scrapebot:scrapebot123@postgres:5432/scrapebot
+REDIS_URL: redis://redis:6379
+depends_on:
+- postgres
+- redis
+
+frontend:
+build: ./client/nextjs-frontend
+environment:
+NEXT_PUBLIC_API_URL: https://api.scrapebot.local
+labels:
+- "traefik.enable=true"
+- "traefik.http.routers.frontend.rule=Host(`scrapebot.local`)"
+- "traefik.http.routers.frontend.entrypoints=websecure"
+- "traefik.http.routers.frontend.tls=true"
+depends_on:
+- api
+
+volumes:
+postgres_data:
+minio_data:
+grafana_data:
