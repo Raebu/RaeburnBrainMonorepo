@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Dict, List
 
-from BusinessFactory.mission_queue import RouterCall, RouterAdapter
+from BusinessFactory.mission_queue import RouterCall, RouterAdapter, RouterPayload
 
 
 @dataclass
@@ -18,9 +18,12 @@ class Mission:
 
 
 def run_mission(mission: Mission, router_call: RouterCall | None = None) -> Dict[str, Any]:
-    caller = router_call or RouterAdapter()
+    adapter = router_call or RouterAdapter().router_call_sync
     if mission.action_type == "llm":
-        payload = {"prompt": mission.description, **mission.payload}
-        result = caller(payload)
+        payload: RouterPayload = {
+            "prompt": mission.description,
+            **mission.payload,
+        }
+        result = adapter(payload)
         return {"mission_id": mission.id, "result": result}
     return {"mission_id": mission.id, "result": {"status": "skipped", "reason": "unsupported action"}}
