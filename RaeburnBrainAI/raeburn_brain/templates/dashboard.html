@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Raeburn Brain Dashboard</title>
+</head>
+<body>
+    <h1>Agent Metrics</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Score</th>
+            <th>Trials</th>
+            <th>Successes</th>
+        </tr>
+        {% for a in agents %}
+        <tr>
+            <td>{{ a.id }}</td>
+            <td>{{ a.title }}</td>
+            <td>{{ '%.2f'|format(a.score) }}</td>
+            <td>{{ a.trials }}</td>
+            <td>{{ a.successes }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
