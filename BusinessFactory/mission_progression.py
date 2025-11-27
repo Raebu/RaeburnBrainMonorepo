@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List
 
 from BusinessFactory.mission_queue import RouterCall, RouterAdapter, RouterPayload
+from RaeburnBrainAI.memory import MemoryStore
 
 
 @dataclass
@@ -25,5 +26,16 @@ def run_mission(mission: Mission, router_call: RouterCall | None = None) -> Dict
             **mission.payload,
         }
         result = adapter(payload)
+        try:
+            store = MemoryStore()
+            store.write(
+                agent_id=mission.id,
+                text=str(result),
+                tags=[*mission.tags, "mission", "result"],
+                importance=0.6,
+            )
+        except Exception:
+            # best-effort memory logging; avoid breaking mission flow
+            pass
         return {"mission_id": mission.id, "result": result}
     return {"mission_id": mission.id, "result": {"status": "skipped", "reason": "unsupported action"}}
